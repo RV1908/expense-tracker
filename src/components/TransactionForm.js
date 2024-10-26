@@ -7,6 +7,10 @@ function TransactionForm({ fetchTransactions }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!name || !datetime || !description) {
+        alert("Transaction cannot be added as details are incomplete.");
+        return;
+      }
     const url = process.env.REACT_APP_API_URL + '/transaction';
     const price = parseFloat(name.split(' ')[0]);
 
@@ -15,8 +19,8 @@ function TransactionForm({ fetchTransactions }) {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
+          name: name.substring(price.toString().length + 1),  
           price,
-          name: name.substring(price.toString().length + 1),
           description,
           datetime,
         }),

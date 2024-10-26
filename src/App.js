@@ -1,10 +1,10 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { useState, useEffect, useCallback } from 'react';
 import './App.css';
-import Sidebar from './components/Sidebar';
-import TransactionForm from './components/TransactionForm';
-import TransactionList from './components/TransactionList';
-import TransactionSummary from './components/TransactionSummary';
+import Sidebar from './components/Sidebar.js';
+import TransactionForm from './components/TransactionForm.js';
+import TransactionList from './components/TransactionList.js';
+import TransactionSummary from './components/TransactionSummary.js';
 import { useLocation } from 'react-router-dom';
 
 function App() {

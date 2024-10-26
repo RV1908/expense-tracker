@@ -1,6 +1,10 @@
 function TransactionList({ transactions, deleteTransaction }) {
     const groupByDate = (transactions) => {
-      return transactions.reduce((groups, transaction) => {
+      // Sort transactions by date first
+      const sortedTransactions = transactions.sort((a, b) => new Date(b.datetime) - new Date(a.datetime));
+  
+      // Then group them by date
+      return sortedTransactions.reduce((groups, transaction) => {
         const date = new Date(transaction.datetime).toDateString();
         if (!groups[date]) {
           groups[date] = [];
@@ -27,8 +31,6 @@ function TransactionList({ transactions, deleteTransaction }) {
                   <div className={`price ${transaction.price < 0 ? 'red' : 'green'}`}>
                     {transaction.price}
                   </div>
-                  {/* <div className="datetime">{transaction.datetime}</div> */}
-                  {/* Delete button */}
                   <button 
                     className="delete-button" 
                     onClick={() => deleteTransaction(transaction._id)}>

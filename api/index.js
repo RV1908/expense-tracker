@@ -1,8 +1,11 @@
-const express = require('express');
-const cors = require('cors');
-require('dotenv').config();
-const Transaction = require('./models/Transaction.js');
-const connectDB = require('../config/connectdb.js');
+import express from 'express';
+import cors from 'cors';
+import dotenv from 'dotenv';
+import Transaction from './models/Transaction.js';
+import connectDB from '../config/connectdb.js';
+
+// Initialize dotenv to load environment variables
+dotenv.config(); 
 
 const app = express();
 const PORT = process.env.PORT || 4040;
@@ -20,6 +23,7 @@ app.get("/api/test", (req, res) => {
 
 // Route to add a new transaction
 app.post('/api/transaction', async (req, res) => {
+    // console.log('Request body:', req.body);
     try {
         const { price, name, description, datetime } = req.body;
         const transaction = await Transaction.create({ price, name, description, datetime });
@@ -58,7 +62,6 @@ app.delete('/api/transaction/:id', async (req, res) => {
         res.status(500).json({ message: "Failed to delete transaction" });
     }
 });
-
 
 // Start server
 app.listen(PORT, () => {
