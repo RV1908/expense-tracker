@@ -1,0 +1,42 @@
+.transaction-summary {
+    background-color: #1f1f1f;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    color: #ddd;
+    max-width: 80%;
+    margin: 20px auto;
+    text-align: center;
+    
+  }
+  
+  .transaction-summary h2 {
+    font-size: 1.8rem;
+    color: #fff;
+    margin-bottom: 15px;
+  }
+  
+  .transaction-summary p {
+    font-size: 1.2rem;
+    margin: 8px 0;
+    color: #ddd;
+  }
+  
+  .transaction-summary p span {
+    font-weight: bold;
+  }
+  
+  .transaction-summary .income {
+    color: #1dc973;
+  }
+  
+  .transaction-summary .expenses {
+    color: #e3342f;
+  }
+  
+  .transaction-summary .balance {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #3b82f6;
+  }
+  

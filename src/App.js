@@ -1,120 +1,108 @@
-import { useEffect, useState } from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { useState, useEffect, useCallback } from 'react';
 import './App.css';
+import Sidebar from './components/Sidebar';
+import TransactionForm from './components/TransactionForm';
+import TransactionList from './components/TransactionList';
+import TransactionSummary from './components/TransactionSummary';
+import { useLocation } from 'react-router-dom';
 
 function App() {
-  const [name, setName] = useState("");
-  const [datetime, setDatetime] = useState("");
-  const [description, setDescription] = useState("");
   const [transactions, setTransactions] = useState([]);
+  const [balance, setBalance] = useState(0);
 
-  useEffect(() => {
-    getTransactions().then(setTransactions);
-  }, []);
-
-  async function getTransactions() {
+  const fetchTransactions = useCallback(async () => {
     const url = process.env.REACT_APP_API_URL + '/transactions';
     try {
       const response = await fetch(url);
-      if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
-      }
-      return await response.json();
+      const data = await response.json();
+      setTransactions(data);
+      calculateBalance(data);
     } catch (error) {
-      console.error("Failed to fetch transactions:", error);
-      return [];
+      console.error('Failed to fetch transactions:', error);
+    }
+  }, []); 
+
+  useEffect(() => {
+    fetchTransactions();
+  }, [fetchTransactions]); 
+
+  function calculateBalance(transactions) {
+    let total = 0;
+    transactions.forEach((transaction) => {
+      total += transaction.price;
+    });
+    setBalance(total.toFixed(2));
+  }
+
+  async function deleteTransaction(id) {
+    const url = `${process.env.REACT_APP_API_URL}/transaction/${id}`;
+    try {
+      const response = await fetch(url, {
+        method: 'DELETE',
+      });
+      if (response.ok) {
+        const updatedTransactions = transactions.filter(transaction => transaction._id !== id);
+        setTransactions(updatedTransactions);
+        calculateBalance(updatedTransactions);
+      } else {
+        console.error('Failed to delete transaction');
+      }
+    } catch (error) {
+      console.error('Error deleting transaction:', error);
     }
   }
 
-  function addNewTransaction(e) {
-    e.preventDefault();
-    const url = process.env.REACT_APP_API_URL + '/transaction';
-    const price = name.split(' ')[0];
+  return (
+    <Router>
+      <div className="App">
+        <Sidebar />
+        <main>
+          <h1>
+            Balance: {balance} <span>Rs</span>
+          </h1>
+          <MainContent 
+            transactions={transactions} 
+            fetchTransactions={fetchTransactions} 
+            deleteTransaction={deleteTransaction} 
+          />
+        </main>
+      </div>
+    </Router>
+  );
+}
 
-    fetch(url, {
-      method: 'POST',
-      headers: { 'Content-type': 'application/json' },
-      body: JSON.stringify({
-        price,
-        name: name.substring(price.length + 1),
-        description,
-        datetime,
-      })
-    }).then(res => {
-      res.json().then(newTransaction => {
-        setName("");
-        setDatetime("");
-        setDescription("");
-        setTransactions(prevTransactions => [newTransaction, ...prevTransactions]);
-      });
-    });
-  }
-
-  function deleteTransaction(id) {
-    const url = `${process.env.REACT_APP_API_URL}/transaction/${id}`;
-    
-    fetch(url, {
-      method: 'DELETE',
-    }).then(() => {
-      setTransactions(prevTransactions =>
-        prevTransactions.filter(transaction => transaction._id !== id)
-      );
-    }).catch(error => console.error("Failed to delete transaction:", error));
-  }
-
-  let balance = 0;
-  for (const transaction of transactions) {
-    balance = balance + transaction.price;
-  }
-  balance = balance.toFixed(2);
-  const fraction = balance.split('.')[1];
-  balance = balance.split('.')[0];
+function MainContent({ transactions, fetchTransactions, deleteTransaction }) {
+  const location = useLocation();
 
   return (
-    <main>
-      <h1>Rs {balance}<span>.{fraction}</span></h1>
-      <form onSubmit={addNewTransaction}>
-        <div className="basic">
-          <input
-            type="text"
-            value={name}
-            onChange={e => setName(e.target.value)}
-            placeholder={'+200 new samsung tv'}
-          />
-          <input
-            type="datetime-local"
-            value={datetime}
-            onChange={e => setDatetime(e.target.value)}
-          />
-        </div>
-        <div className="description">
-          <input
-            type="text"
-            value={description}
-            onChange={e => setDescription(e.target.value)}
-            placeholder={'description'}
-          />
-        </div>
-        <button type="submit">Add new transaction</button>
-      </form>
-
-      <div className="transactions">
-        {transactions.length > 0 && transactions.map((transaction, index) => (
-          <div className="transaction" key={transaction._id}>
-            <div className="left">
-              <div className="name">{transaction.name}</div>
-              <div className="description">{transaction.description}</div>
-            </div>
-            <div className="right">
-              <div className={"price " + (transaction.price < 0 ? 'red' : 'green')}>
-                {transaction.price}
-              </div>
-              <div className="datetime">{transaction.datetime}</div>
-              <button onClick={() => deleteTransaction(transaction._id)}>Delete</button>
-            </div>
-          </div>
-        ))}
-      </div>
-    </main>
+    <>
+      {/* Render the form only if not on TransactionSummary page */}
+      {location.pathname !== '/TransactionSummary' && (
+        <TransactionForm fetchTransactions={fetchTransactions} />
+      )}
+      <Routes>
+        <Route 
+          path="/" 
+          element={<TransactionList transactions={transactions} deleteTransaction={deleteTransaction} />} 
+        />
+        <Route 
+          path="/today" 
+          element={<TransactionList 
+            transactions={transactions.filter(transaction => 
+              new Date(transaction.datetime).toDateString() === new Date().toDateString()
+            )} 
+            deleteTransaction={deleteTransaction} 
+          />} 
+        />
+        <Route 
+          path="/TransactionSummary" 
+          element={<TransactionSummary 
+            transactions={transactions} 
+          />} 
+        />
+      </Routes>
+    </>
   );
 }
 

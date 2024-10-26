@@ -1,0 +1,67 @@
+/* Sidebar */
+.sidebar {
+    width: 260px; /* Fixed width of the sidebar */
+    padding: 20px;
+    background-color: #1c1e26;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    box-shadow: 2px 0 8px rgba(0, 0, 0, 0.3);
+    transition: width 0.3s;
+    position: fixed; /* Fix the sidebar to the left */
+    left: 0;
+    top: 0; /* Fixes the sidebar at the top */
+    height: 100vh; /* Ensures the sidebar takes the full height of the viewport */
+    overflow-y: auto; /* Allows scrolling if content exceeds the height */
+}
+
+.sidebar button {
+    background-color: #30333d;
+    color: #e4e4e7;
+    border: none;
+    padding: 12px;
+    border-radius: 6px;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.2s;
+    width: 100%;
+}
+
+.sidebar button:hover {
+    background-color: #44475a;
+    transform: scale(1.02);
+}
+
+.sidebar button:active {
+    background-color: #5a5e6b;
+}
+
+.sidebar button:focus {
+    outline: 2px solid #4c8bf5;
+}
+
+/* Sidebar Active Link */
+.sidebar a {
+    text-decoration: none;
+    width: 100%;
+}
+
+.sidebar a.active button {
+    background-color: #3b82f6;
+    color: #fff;
+}
+
+.sidebar a.active button:hover {
+    background-color: #2563eb;
+}
+
+/* Responsive Sidebar */
+@media (max-width: 768px) {
+    .sidebar {
+        width: 100%;
+        flex-direction: row;
+        height: auto; /* Let the height auto adjust on smaller screens */
+        overflow-x: auto; /* Allow horizontal scrolling */
+    }
+}
