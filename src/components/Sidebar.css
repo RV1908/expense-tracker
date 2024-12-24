@@ -1,36 +1,43 @@
-/* Sidebar */
+/* Sidebar.css */
+
+/* Ensure the navbar is fixed to the top */
 .sidebar {
-    width: 260px; /* Fixed width of the sidebar */
-    padding: 20px;
-    background-color: #1c1e26;
+    position: fixed; /* Fixes the sidebar to the viewport */
+    top: 0;         /* Aligns it to the top */
+    left: 0;        /* Aligns it to the left */
+    width: 100%;    /* Makes it span the full width */
+    height: 60px;   /* Adjust the height as needed */
+    background-color: #1f2029; /* Background color of the navbar */
+    z-index: 1000;  /* Ensures it's above other content */
     display: flex;
-    flex-direction: column;
-    gap: 15px;
-    box-shadow: 2px 0 8px rgba(0, 0, 0, 0.3);
-    transition: width 0.3s;
-    position: fixed; /* Fix the sidebar to the left */
-    left: 0;
-    top: 0; /* Fixes the sidebar at the top */
-    height: 100vh; /* Ensures the sidebar takes the full height of the viewport */
-    overflow-y: auto; /* Allows scrolling if content exceeds the height */
-}
+    align-items: center;
+    padding: 10 20px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Optional: adds a shadow for better visibility */
+  }
+  
+  main {
+    margin-top: 60px; /* Match the height of the fixed navbar */
+  }
+  
 
 .sidebar button {
     background-color: #30333d;
     color: #e4e4e7;
-    border: none;
+    border: 2px solid black;
     padding: 12px;
     border-radius: 6px;
     font-size: 1rem;
     font-weight: 500;
     cursor: pointer;
     transition: background-color 0.3s, transform 0.2s;
-    width: 100%;
+    width: 95%;
+    /* height: 100%; */
+    margin-left: 2px;
 }
 
 .sidebar button:hover {
     background-color: #44475a;
-    transform: scale(1.02);
+    /* transform: scale(1.02); */
 }
 
 .sidebar button:active {
@@ -61,7 +68,10 @@
     .sidebar {
         width: 100%;
         flex-direction: row;
-        height: auto; /* Let the height auto adjust on smaller screens */
+        
         overflow-x: auto; /* Allow horizontal scrolling */
+    }
+    .sidebar button {
+        height: 60px;
     }
 }
